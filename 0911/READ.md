@@ -136,3 +136,71 @@
 
 ---
 
+# Chapter 1 — 1.7.2 Algorithm Workbench (Solutions)
+
+> Kip Irvine, *Assembly Language for x86 Processors, 7th Ed.*  
+> 9 Problems solved in C++ (no sprintf/sscanf 등 자동 변환 함수 사용)
+
+```cpp
+#include <bits/stdc++.h>
+using namespace std;
+
+int val(char c){ return isdigit(c)?c-'0':10+(toupper(c)-'A'); }
+char dig(int v){ return v<10?'0'+v:'A'+v-10; }
+
+// 1) 16-bit Binary String → Integer
+uint32_t parseBin16(string s){ uint32_t x=0; for(char c:s) x=(x<<1)+(c-'0'); return x; }
+
+// 2) 32-bit Hex String → Integer
+uint32_t parseHex32(string s){ uint32_t x=0; for(char c:s) x=(x<<4)+val(c); return x; }
+
+// 3) Integer → Binary String
+string toBin(uint32_t n){ if(!n) return "0"; string r; while(n){ r.push_back((n&1)+'0'); n>>=1; } reverse(r.begin(),r.end()); return r; }
+
+// 4) Integer → Hex String
+string toHex(uint32_t n){ if(!n) return "0"; string r; while(n){ r.push_back(dig(n&15)); n>>=4; } reverse(r.begin(),r.end()); return r; }
+
+// 5) Add Two Base-b Strings (2≤b≤10)
+string addBase(string A,string B,int b){ int i=A.size()-1,j=B.size()-1,c=0; string r;
+  while(i>=0||j>=0||c){ int x=i>=0?A[i--]-'0':0, y=j>=0?B[j--]-'0':0; int s=x+y+c; r.push_back(dig(s%b)); c=s/b; }
+  reverse(r.begin(),r.end()); return r;
+}
+
+// 6) Add Two Hex Strings
+string addHex(string A,string B){ int i=A.size()-1,j=B.size()-1,c=0; string r;
+  while(i>=0||j>=0||c){ int x=i>=0?val(A[i--]):0, y=j>=0?val(B[j--]):0; int s=x+y+c; r.push_back(dig(s%16)); c=s/16; }
+  reverse(r.begin(),r.end()); return r;
+}
+
+// 7) Multiply Hex Digit × Hex String
+string mulHex(char d,string S){ int m=val(d),c=0; string r;
+  for(int i=S.size()-1;i>=0;--i){ int p=val(S[i])*m+c; r.push_back(dig(p%16)); c=p/16; }
+  if(c) r.push_back(dig(c)); reverse(r.begin(),r.end()); return r;
+}
+
+// 8) Java Disassembly (설명)
+//   int Y; int X = (Y + 4) * 3;
+//   → javap -c 결과에서: iload, iconst_4, iadd, iconst_3, imul, istore 등으로 분해됨.
+//   각 바이트코드 = 변수 로드, 상수 적재, 산술연산, 결과 저장.
+
+
+// 9) Unsigned Binary Subtraction
+// 방법: 보수법(2의 보수) 또는 자리 내림 빼기
+string subBin(string A,string B){ // assume A>=B
+  int i=A.size()-1,j=B.size()-1,borrow=0; string r;
+  while(i>=0){ int x=A[i]-'0'-borrow; int y=j>=0?B[j--]-'0':0; 
+    if(x<y){ x+=2; borrow=1; } else borrow=0;
+    r.push_back((x-y)+'0'); i--; }
+  while(r.size()>1 && r.back()=='0') r.pop_back();
+  reverse(r.begin(),r.end()); return r;
+}
+
+int main(){
+  cout<<parseBin16("1111000011110000")<<"\n";     // 0xF0F0
+  cout<<parseHex32("1A2B3C")<<"\n";              // 0x1A2B3C
+  cout<<toBin(42)<<" "<<toHex(255)<<"\n";        // 101010 FF
+  cout<<addBase("1011","1101",2)<<"\n";          // 11000
+  cout<<addHex("FFFF","1")<<"\n";                // 10000
+  cout<<mulHex('A',"FF")<<"\n";                  // 9F6
+  cout<<subBin("10001000","00000101")<<"\n";     // 10000011
+}
