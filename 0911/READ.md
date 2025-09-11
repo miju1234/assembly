@@ -1,5 +1,3 @@
----
-
 
 # Assembly Language — Basic Concepts
 
