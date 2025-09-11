@@ -1,6 +1,6 @@
 
 **Kip Irvine, Assembly Language for x86 Processors (7th Edition)** 교재
-**Chapter 1, Section 1.7.1 (p.63) Short Answer 문제(1–28)** 풀이
+## 1.7.1 Short Answer (28문제)
 
 ---
 
