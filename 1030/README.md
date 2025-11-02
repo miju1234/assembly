@@ -175,3 +175,73 @@ proc_3:
 - main  → ESI+4, EAX+10 → array[12] = 40  
 
 ✅ **정답:** array = [10, 20, 30, 40]
+
+
+## 5.8.2 Algorithm Workbench (①~⑤)
+
+---
+
+① **EAX와 EBX의 값을 PUSH/POP만으로 교환하라.**
+
+mov eax, 1111h  
+mov ebx, 2222h  
+push eax  
+push ebx  
+pop  eax     ; EAX ← EBX  
+pop  ebx     ; EBX ← EAX  
+
+🧠 **풀이**  
+- push/pop 두 쌍으로 레지스터 내용을 스택에 저장 후 역순 복원  
+- 임시 레지스터 없이 교환 가능  
+
+---
+
+② **RET 직전, 반환 주소를 현재 위치보다 3바이트 이후로 이동시켜라.**
+
+add dword ptr [esp], 3  
+ret  
+
+🧠 **풀이**  
+- [ESP]에 저장된 반환주소에 3을 더함  
+- 반환 시 3바이트 뒤 명령부터 실행됨  
+⚠️ 교육용 예제, 실무 코드에서는 위험  
+
+---
+
+③ **로컬 변수 두 개(DWORD)를 확보하고 초기화하라.**
+
+sub esp, 8  
+mov dword ptr [esp],   1000h  
+mov dword ptr [esp+4], 2000h  
+add esp, 8  
+
+🧠 **풀이**  
+- `sub esp,8` → 스택에 8바이트 확보  
+- [esp]와 [esp+4]로 각각 접근  
+
+---
+
+④ **배열의 array[i] 값을 array[i-1]로 복사하라.**
+
+mov esi, TYPE DWORD * i       ; i번째 인덱스  
+mov eax, [array + esi]        ; array[i]  
+mov [array + esi - TYPE DWORD], eax  ; array[i-1] = array[i]  
+
+🧠 **풀이**  
+- 인덱스 레지스터 기반 주소 지정  
+- TYPE 키워드로 요소 크기(4바이트) 자동 계산  
+
+---
+
+⑤ **프로시저 내부에서 반환 주소를 출력하라.**
+
+push eax  
+mov  eax, [esp+4]     ; (push로 인해 RA는 esp+4 위치)  
+call WriteHex  
+pop  eax  
+ret  
+
+🧠 **풀이**  
+- 반환주소를 읽기만 하고 스택은 건드리지 않음  
+- RA를 pop하지 않아 정상적으로 RET 복귀 가능  
+
