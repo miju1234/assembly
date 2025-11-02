@@ -249,8 +249,6 @@ ret
 ---
 # 💻 5.9 Programming Exercises — MASM 정답 통합본  
 > 📘 Irvine, *Assembly Language for x86 Processors (7th Edition)*  
-> 문제 설명과 MASM 정답을 하나의 코드블록 안에 정리함.  
-> ✅ 복사 버튼 한 번으로 전체 복사 가능  
 
 ---
 
