@@ -110,6 +110,68 @@
 - `push esi` / `push ecx` → 루프 → `pop ecx` / `pop esi`  
 - 반환값: EAX  
 
+
 ---
 
-⑲ **선택형 — main 복귀 직전 EDX 값**  
+⑲ **선택형 — 다음 코드 실행 후 main 복귀 직전의 EDX 값은?**
+
+; main  
+mov edx,0  
+mov eax,40  
+push eax  
+call Ex5Sub  
+; 여기서 EDX = ?  
+
+Ex5Sub PROC  
+  pop  eax  
+  pop  edx  
+  push eax  
+  ret  
+Ex5Sub ENDP  
+
+🧠 **풀이**  
+- CALL 시 스택(top=RA, 아래=40)  
+- pop eax → EAX=RA  
+- pop edx → EDX=40  
+- push eax → RA 복구  
+- ret → 정상 복귀  
+
+✅ **정답:** EDX = 40  
+
+---
+
+⑳ **배열에 기록되는 값 (초기 EAX=10, ESI=0)**
+
+; main  
+mov eax,10  
+mov esi,0  
+call proc_1  
+add  esi,4  
+add  eax,10  
+mov  array[esi],eax     ; array[12] = 40  
+
+proc_1:  
+  call proc_2  
+  add  esi,4  
+  add  eax,10  
+  mov  array[esi],eax   ; array[8]  = 30  
+  ret  
+
+proc_2:  
+  call proc_3  
+  add  esi,4  
+  add  eax,10  
+  mov  array[esi],eax   ; array[4]  = 20  
+  ret  
+
+proc_3:  
+  mov  array[esi],eax   ; array[0]  = 10  
+  ret  
+
+🧠 **풀이**  
+- proc_3 → array[0] = 10  
+- proc_2 → ESI+4, EAX+10 → array[4] = 20  
+- proc_1 → ESI+4, EAX+10 → array[8] = 30  
+- main  → ESI+4, EAX+10 → array[12] = 40  
+
+✅ **정답:** array = [10, 20, 30, 40]
