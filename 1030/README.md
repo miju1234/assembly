@@ -246,3 +246,125 @@ ret
 - 반환주소를 읽기만 하고 스택은 건드리지 않음  
 - RA를 pop하지 않아 정상적으로 RET 복귀 가능  
 
+---
+
+## 5.9 Programming Exercises (①~⑪)
+
+---
+
+① **Draw Text Colors**  
+화면에 동일한 문자열을 네 가지 색상으로 반복 출력하라.  
+`SetTextColor` 프로시저를 사용해 전경색을 변경한다.  
+
+🧠 **풀이**  
+- `include Irvine32.inc`  
+- 루프를 사용해 색상 바꾸며 `WriteString` 호출  
+- `call SetTextColor`, `call Crlf` 반복  
+
+---
+
+② **Linking Array Items**  
+문자 배열(`chars`)과 링크 배열(`links`)을 이용해 연결 리스트를 순서대로 따라가며  
+문자를 새로운 배열에 복사하라.  
+
+🧠 **풀이**  
+- 시작 인덱스 `start`에서 링크를 따라 이동  
+- `mov esi, OFFSET chars`  
+- `mov edi, OFFSET output`  
+- `mov ecx, LENGTHOF chars`  
+- `while (next != 0)` 루프로 복사  
+
+---
+
+③ **Simple Addition (1)**  
+화면 중앙 근처에 커서를 위치시키고, 두 정수를 입력받아 합계를 출력하는 프로그램을 작성하라.  
+
+🧠 **풀이**  
+- `call Clrscr`, `call Gotoxy`  
+- `call ReadInt` 두 번 → EAX, EBX에 저장  
+- `add eax, ebx`, `call WriteInt`  
+
+---
+
+④ **Simple Addition (2)**  
+위 프로그램을 기반으로 하여 **세 번 반복**하도록 수정하라. 각 루프마다 화면을 지운다.  
+
+🧠 **풀이**  
+- `mov ecx,3`  
+- `L1:` → 덧셈 실행 → `call WaitMsg` → `call Clrscr`  
+- `loop L1`  
+
+---
+
+⑤ **BetterRandomRange Procedure**  
+기존 `RandomRange`를 개선하여 **M~N-1 범위**의 난수를 생성하는  
+`BetterRandomRange`를 작성하라.  
+
+🧠 **풀이**  
+- `EAX=N`, `EBX=M`  
+- `sub eax, ebx` → 범위 계산  
+- `call RandomRange` → 결과에 EBX 더하기  
+- 반환값 = EBX + RandomRange(N−M)  
+
+---
+
+⑥ **Random Table Generation**  
+0~99 난수를 10개 생성하여 배열에 저장하고 출력하라.  
+
+🧠 **풀이**  
+- `mov ecx,10`  
+- 루프 안에서 `call RandomRange`, `mov [array+esi], eax`  
+- 루프 종료 후 `DumpMem`으로 배열 출력  
+
+---
+
+⑦ **Factorial Procedure**  
+입력받은 정수 n의 팩토리얼 n!을 계산하라.  
+
+🧠 **풀이**  
+- `mov ecx,n`, `mov eax,1`  
+- `L1: imul eax, ecx`, `loop L1`  
+- `call WriteDec`  
+
+---
+
+⑧ **Array Average**  
+사용자로부터 N개의 정수를 입력받아 배열에 저장하고, 평균을 계산해 출력하라.  
+
+🧠 **풀이**  
+- `ReadInt`로 입력 반복  
+- 합계 누적 → `div ecx`로 평균 계산  
+- `WriteInt`로 출력  
+
+---
+
+⑨ **Reverse String**  
+문자열을 입력받아 역순으로 뒤집어 출력하라.  
+
+🧠 **풀이**  
+- `ReadString`으로 입력  
+- 포인터 앞뒤 교환(`xchg al, [edi]`)  
+- `loop`로 중간까지 반복  
+
+---
+
+⑩ **Display Hex Table**  
+0~255까지 정수를 16진수로 표시하는 표를 출력하라.  
+
+🧠 **풀이**  
+- `mov ecx,256`  
+- `call WriteHex`, `call Crlf`  
+- 16열마다 줄바꿈 처리  
+
+---
+
+⑪ **Colorful Pattern Output**  
+여러 색상의 문자 패턴을 화면에 출력하라.  
+
+🧠 **풀이**  
+- `mov ecx, length`  
+- 루프 내 `SetTextColor`, `WriteChar`  
+- 배경색/전경색 번갈아 변경  
+
+---
+
