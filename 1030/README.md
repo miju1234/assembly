@@ -368,3 +368,328 @@ ret
 
 ---
 
+; ================================================================
+; 💻 5.9 Programming Exercises — MASM 정답 통합본
+; 📘 Irvine32.inc 기반 (32-bit MASM)
+; 문제 → 간단 설명 → MASM 코드
+; ================================================================
+
+; 🟩 ① Draw Text Colors
+; [문제] 같은 문자열을 네 가지 색으로 루프 돌며 출력하라. (SetTextColor 사용)
+; 색상 테이블을 순회하며 SetTextColor → WriteString → Crlf 반복.
+.386
+.model flat, stdcall
+option casemap:none
+include Irvine32.inc
+.stack 4096
+.data
+  msg  BYTE "Color demo!",0
+  cols DWORD yellow+(black*16), lightGreen+(black*16), lightCyan+(black*16), lightRed+(black*16)
+.code
+DrawTextColors PROC
+  mov  edx, OFFSET msg
+  mov  ecx, LENGTHOF cols
+  mov  esi, OFFSET cols
+L1:
+  mov  eax, [esi]
+  call SetTextColor
+  call WriteString
+  call Crlf
+  add  esi, TYPE DWORD
+  loop L1
+  ret
+DrawTextColors ENDP
+
+; ------------------------------------------------
+; 🟦 ② Linking Array Items
+; [문제] start, chars, links 배열을 따라가며 문자를 새 배열에 복사하라.
+; 현재 인덱스를 복사하고 다음 인덱스 = links[idx], 0이면 종료.
+.data
+  start  DWORD 1
+  chars  BYTE  'H','A','C','E','B','D','F','G'
+  links  DWORD 0,4,5,6,2,3,7,0
+  outArr BYTE 8 DUP(?)
+.code
+LinkingArray PROC
+  mov  eax, start
+  mov  edi, OFFSET outArr
+Lcopy:
+  mov  bl, [chars+eax]
+  mov  [edi], bl
+  inc  edi
+  mov  edx, eax
+  shl  edx, 2
+  mov  eax, [links+edx]
+  test eax, eax
+  jnz  Lcopy
+  mov  bl, [chars+0]
+  mov  [edi], bl
+  ret
+LinkingArray ENDP
+; ✅ 결과: outArr = A,B,C,D,E,F,G,H
+
+; ------------------------------------------------
+; 🟧 ③ Simple Addition (1)
+; [문제] 두 정수를 입력받아 합계를 출력하라. (ReadInt 두 번 → add → WriteInt)
+.data
+  p1  BYTE "Enter first integer: ",0
+  p2  BYTE "Enter second integer: ",0
+  msg BYTE "Sum = ",0
+.code
+SimpleAdd PROC
+  call Clrscr
+  mov  edx, OFFSET p1
+  call WriteString
+  call ReadInt
+  mov  ebx, eax
+  mov  edx, OFFSET p2
+  call WriteString
+  call ReadInt
+  add  eax, ebx
+  mov  edx, OFFSET msg
+  call WriteString
+  call WriteInt
+  call Crlf
+  ret
+SimpleAdd ENDP
+
+; ------------------------------------------------
+; 🟥 ④ Simple Addition (2)
+; [문제] ③의 프로그램을 세 번 반복하고 매 반복마다 화면을 지워라.
+.code
+SimpleAddLoop PROC
+  mov  ecx, 3
+L1:
+  call Clrscr
+  call SimpleAdd
+  call WaitMsg
+  loop L1
+  ret
+SimpleAddLoop ENDP
+
+; ------------------------------------------------
+; 🟨 ⑤ BetterRandomRange
+; [문제] EBX=M, EAX=N 입력으로 [M, N) 범위 난수를 생성하라. (50회 테스트)
+.data
+  NTest DWORD 50
+.code
+BetterRandomRange PROC
+  push edx
+  sub  eax, ebx
+  call RandomRange
+  add  eax, ebx
+  pop  edx
+  ret
+BetterRandomRange ENDP
+
+Test_BetterRandom PROC
+  call Randomize
+  mov  ecx, NTest
+T1:
+  mov  ebx, -300
+  mov  eax,  100
+  call BetterRandomRange
+  call WriteInt
+  call Crlf
+  loop T1
+  ret
+Test_BetterRandom ENDP
+
+; ------------------------------------------------
+; 🟪 ⑥ Random Table Generation
+; [문제] 0~99 난수 10개를 배열에 저장하고 모두 출력하라.
+.data
+  rndTab DWORD 10 DUP(?)
+.code
+RandomTable PROC
+  call Randomize
+  mov  ecx, 10
+  mov  esi, OFFSET rndTab
+FILL:
+  mov  eax, 100
+  call RandomRange
+  mov  [esi], eax
+  add  esi, TYPE DWORD
+  loop FILL
+  mov  esi, OFFSET rndTab
+  mov  ecx, 10
+PRINT:
+  mov  eax, [esi]
+  call WriteInt
+  call Crlf
+  add  esi, TYPE DWORD
+  loop PRINT
+  ret
+RandomTable ENDP
+
+; ------------------------------------------------
+; 🟫 ⑦ Factorial Procedure
+; [문제] 입력받은 정수 n의 팩토리얼 n!을 계산하여 출력하라.
+.data
+  promptN BYTE "Enter n: ",0
+  facMsg  BYTE "n! = ",0
+.code
+Factorial PROC
+  mov  edx, OFFSET promptN
+  call WriteString
+  call ReadInt
+  mov  ecx, eax
+  mov  eax, 1
+  cmp  ecx, 0
+  jbe  DONE
+LOOPF:
+  imul eax, ecx
+  loop LOOPF
+DONE:
+  mov  edx, OFFSET facMsg
+  call WriteString
+  call WriteInt
+  call Crlf
+  ret
+Factorial ENDP
+
+; ------------------------------------------------
+; 🔷 ⑧ Array Average
+; [문제] N개의 정수를 입력받아 배열에 저장하고 평균(정수)을 출력하라.
+.data
+  NCount  DWORD 5
+  arr     SDWORD 5 DUP(?)
+  avgMsg  BYTE "Average = ",0
+  inMsg   BYTE "Enter value: ",0
+.code
+ArrayAverage PROC
+  mov  ecx, NCount
+  mov  esi, OFFSET arr
+READL:
+  mov  edx, OFFSET inMsg
+  call WriteString
+  call ReadInt
+  mov  [esi], eax
+  add  esi, TYPE SDWORD
+  loop READL
+  xor  eax, eax
+  mov  ecx, NCount
+  mov  esi, OFFSET arr
+SUMLOOP:
+  add  eax, [esi]
+  add  esi, TYPE SDWORD
+  loop SUMLOOP
+  cdq
+  mov  ecx, NCount
+  idiv ecx
+  mov  edx, OFFSET avgMsg
+  call WriteString
+  call WriteInt
+  call Crlf
+  ret
+ArrayAverage ENDP
+
+; ------------------------------------------------
+; 🔸 ⑨ Reverse String
+; [문제] 문자열을 입력받아 제자리에서 역순으로 뒤집어 출력하라.
+.data
+  buf   BYTE 128 DUP(0)
+  buflen DWORD 127
+  promptS BYTE "Enter string: ",0
+  outMsg  BYTE "Reversed: ",0
+.code
+ReverseString PROC
+  mov  edx, OFFSET promptS
+  call WriteString
+  mov  edx, OFFSET buf
+  mov  ecx, buflen
+  call ReadString
+  mov  edi, OFFSET buf
+  xor  ecx, ecx
+LENF:
+  cmp  BYTE PTR [edi+ecx], 0
+  je   GOTLEN
+  inc  ecx
+  jmp  LENF
+GOTLEN:
+  xor  eax, eax
+  mov  ebx, ecx
+  dec  ebx
+REVLP:
+  cmp  eax, ebx
+  jge  DONE
+  mov  dl, [buf+eax]
+  mov  dh, [buf+ebx]
+  mov  [buf+eax], dh
+  mov  [buf+ebx], dl
+  inc  eax
+  dec  ebx
+  jmp  REVLP
+DONE:
+  mov  edx, OFFSET outMsg
+  call WriteString
+  mov  edx, OFFSET buf
+  call WriteString
+  call Crlf
+  ret
+ReverseString ENDP
+
+; ------------------------------------------------
+; 🟤 ⑩ Display Hex Table
+; [문제] 0~255를 16진수로 표 형태로 출력하라. (16개마다 줄바꿈)
+.data
+  colCnt DWORD 0
+.code
+DisplayHexTable PROC
+  xor  ecx, ecx
+LHEX:
+  mov  eax, ecx
+  call WriteHex
+  mov  al, ' '
+  call WriteChar
+  inc  colCnt
+  cmp  colCnt, 16
+  jne  NEXT
+  call Crlf
+  mov  colCnt, 0
+NEXT:
+  inc  ecx
+  cmp  ecx, 256
+  jb   LHEX
+  call Crlf
+  ret
+DisplayHexTable ENDP
+
+; ------------------------------------------------
+; 🟠 ⑪ Colorful Pattern Output
+; [문제] 여러 색상을 번갈아 사용하여 문자 패턴을 출력하라.
+.data
+  patt   BYTE "*-=_",0
+  rows   DWORD 6
+  cols   DWORD 20
+  pal    DWORD lightRed+(black*16), lightGreen+(black*16), lightCyan+(black*16), yellow+(black*16)
+.code
+ColorfulPattern PROC
+  mov  ebx, 0
+  mov  edx, rows
+ROWLP:
+  push edx
+  mov  ecx, cols
+  mov  esi, 0
+COLLP:
+  mov  eax, [pal+ebx*4]
+  call SetTextColor
+  mov  al, [patt+esi]
+  call WriteChar
+  inc  ebx
+  and  ebx, 3
+  inc  esi
+  cmp  BYTE PTR [patt+esi], 0
+  jne  SKIPR
+  mov  esi, 0
+SKIPR:
+  loop COLLP
+  call Crlf
+  pop  edx
+  dec  edx
+  jnz  ROWLP
+  ret
+ColorfulPattern ENDP
+; ================================================================
+; END OF FILE
+; ================================================================
