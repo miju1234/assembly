@@ -176,6 +176,7 @@ proc_3:
 
 ✅ **정답:** array = [10, 20, 30, 40]
 
+---
 
 ## 5.8.2 Algorithm Workbench (①~⑤)
 
