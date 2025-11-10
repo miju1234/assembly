@@ -1,21 +1,15 @@
-## 🧠 Q6. AddVariables Program with 64-bit Variables (★★★)
-
-Modify AddVariables to use 64-bit (QWORD) variables.
+### 🧠 Q1.
+**문제:** What will be the value of BX after the following instructions execute?
 
 ```asm
-INCLUDE Irvine32.inc
-.data
-val1 QWORD 12345678h
-val2 QWORD 87654321h
-sum  QWORD ?
-.code
-main PROC
-  mov eax, DWORD PTR val1
-  add eax, DWORD PTR val2
-  mov DWORD PTR sum, eax
-  mov eax, DWORD PTR sum
-  call WriteInt
-  call Crlf
-  exit
-main ENDP
-END main
+; 문제 코드
+mov  bx,0FFFFh
+and  bx,6Bh
+
+; 풀이
+; AND는 각 비트를 비교해 둘 다 1인 비트만 1로 남김
+; 0FFFFh = 1111 1111 1111 1111b
+; 006Bh  = 0000 0000 0110 1011b
+; 결과: 0000 0000 0110 1011b = 006Bh
+
+; ✅ 정답: BX = 006Bh
