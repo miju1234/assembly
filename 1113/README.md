@@ -1,4 +1,4 @@
-# 📘 Chapter 7 — Integer Arithmetic (PPT 핵심 요약)
+# 📘 Chapter 7 — Integer Arithmetic (핵심 요약)
 
 ---
 
