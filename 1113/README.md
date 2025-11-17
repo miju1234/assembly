@@ -301,8 +301,8 @@ dec ebx
 ; 정답:
 ; dec ebx
 ```
-```
-```markdown
+
+---
 # 🧩 Chapter 7 — Integer Arithmetic
 ## 🔹 7.10 Programming Exercises
 ---
