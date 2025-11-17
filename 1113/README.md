@@ -1,3 +1,79 @@
+# 📘 Chapter 7 — Integer Arithmetic (PPT 핵심 요약)
+
+---
+
+## 🔹 1. Signed / Unsigned Arithmetic  
+- **ADD / SUB**  
+  - 부호/무부호 모두 사용 가능  
+  - CF: unsigned carry  
+  - OF: signed overflow  
+- **INC / DEC**  
+  - CF를 변경하지 않음  
+
+---
+
+## 🔹 2. Extended Addition / Subtraction  
+- **ADC** : Carry 포함 덧셈  
+- **SBB** : Borrow 포함 뺄셈  
+- 64비트 정수 연산 →  
+  1) 하위 DWORD  
+  2) 상위 DWORD + ADC/SBB  
+
+---
+
+## 🔹 3. Multiplication (MUL / IMUL)  
+- **MUL** → unsigned multiply  
+- **IMUL** → signed multiply  
+- 암시적 레지스터 규칙:  
+  - 8bit:  AL × r/m8  → AX  
+  - 16bit: AX × r/m16 → DX:AX  
+  - 32bit: EAX × r/m32 → EDX:EAX  
+
+---
+
+## 🔹 4. Division (DIV / IDIV)  
+- **DIV** → unsigned divide  
+- **IDIV** → signed divide  
+- 나누기 직전 반드시 **부호 확장 필요**  
+  - 8bit → CBW  
+  - 16bit → CWD  
+  - 32bit → CDQ  
+  - 64bit → CQO  
+- 결과 저장 위치:  
+  - 몫: AL / AX / EAX  
+  - 나머지: AH / DX / EDX  
+
+---
+
+## 🔹 5. Shift Instructions  
+- **SHL/SAL**: 왼쪽 시프트 → ×2  
+- **SHR**: 오른쪽 시프트 (unsigned) → ÷2  
+- **SAR**: 오른쪽 시프트 (signed) → ÷2  
+- N비트 이동 → ×2ⁿ 또는 ÷2ⁿ  
+
+---
+
+## 🔹 6. Rotate Instructions  
+- **ROL / ROR** → 비트 순환  
+- **RCL / RCR** → CF를 포함해 순환  
+
+---
+
+## 🔹 7. ASCII & Packed BCD Adjust  
+- **AAA / AAS** : ASCII 보정  
+- **AAM / AAD** : BCD 변환  
+- **DAA / DAS** : Packed BCD 보정  
+
+---
+
+## 🔹 8. Important Rules  
+- DIV/IDIV 실행 전 EDX:EAX(또는 DX:AX) 설정 필수  
+- 부호 확장은 CBW/CWD/CDQ/CQO  
+- 곱셈/나눗셈 시 overflow 발생 가능  
+- Shift는 곱셈/나눗셈의 효율적 대체 연산  
+
+---
+
 
 # 🧩 Chapter 7 — Integer Arithmetic
 ## 🔹 7.9 Review Questions and Exercises
