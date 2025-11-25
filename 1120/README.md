@@ -339,8 +339,7 @@ StrCopy ENDP
 ```
 
 ---
-```
-```markdown
+
 # 🧩 Chapter 8 — Advanced Procedures
 ## 🔹 8.10 Programming Exercises
 
