@@ -340,8 +340,7 @@ StrCopy ENDP
 
 ---
 
-# 🧩 Chapter 8 — Advanced Procedures
-## 🔹 8.10 Programming Exercises
+# 🔹 8.10 Programming Exercises
 
 ---
 
